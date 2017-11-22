@@ -1,0 +1,44 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class PlayerController : MonoBehaviour {
+
+	public float speed;
+	public Text scoreText;
+	public Text winText;
+
+	private Rigidbody rb;
+	private int score;
+
+	void Start() {
+		rb = GetComponent<Rigidbody> ();
+		score = 0;
+		DisplayScore ();
+		winText.text = "";
+	}
+
+	void FixedUpdate() {
+		float moveHorizontal = Input.GetAxis ("Horizontal");
+		float moveVertical = Input.GetAxis ("Vertical");
+
+		Vector3 movement = new Vector3 (moveHorizontal, 0.0f, moveVertical);
+		rb.AddForce (movement * speed);
+	}
+
+	void OnTriggerEnter(Collider other){
+		if (other.gameObject.CompareTag ("Pickup")) {
+			other.gameObject.SetActive (false);
+			score++;
+			DisplayScore ();
+		}
+	}
+
+	void DisplayScore(){
+		scoreText.text = "Score: " + score.ToString ();
+		if (score >= 8) {
+			winText.text = "Congratulations, you have won!";
+		}
+	}
+}
